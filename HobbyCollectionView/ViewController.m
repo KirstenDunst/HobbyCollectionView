@@ -89,16 +89,19 @@
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
     UICollectionReusableView *view = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header" forIndexPath:indexPath];
-//    UILabel *label = [[UILabel alloc]init];
-//    label.frame = CGRectMake(0, 10, view.frame.size.width-20, view.frame.size.height);
-//    [view addSubview:label];
-    NSString *str;
-    if (indexPath.section == 0) {
-        str = @"已选";
+    UILabel *label;
+    if (view.constraints.count==0) {
+        label = [[UILabel alloc]init];
+        label.frame = CGRectMake(0, 10, view.frame.size.width-20, view.frame.size.height);
+        [view addSubview:label];
     }else{
-        str = @"添加更多";
+        label = [view.subviews firstObject];
     }
-    [str drawInRect:CGRectMake(0, 0, view.frame.size.width, view.frame.size.height) withAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor],NSFontAttributeName:[UIFont systemFontOfSize:17]}];
+    if (indexPath.section == 0) {
+        label.text = @"已选";
+    }else{
+        label.text = @"添加更多";
+    }
     return view;
 }
 
@@ -112,9 +115,12 @@
         [temArr addObject:str];
         [self.dataDic setValue:tempArr forKey:@"添加更多"];
         [self.dataDic setValue:temArr forKey:@"已选"];
+        [collectionView moveItemAtIndexPath:indexPath toIndexPath:[NSIndexPath indexPathForRow:temArr.count-1 inSection:0]];
+    }else{
+        
+        
+        
     }
-   
-    [collectionView reloadData];
 }
 
 
