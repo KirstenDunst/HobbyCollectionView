@@ -15,6 +15,7 @@
     BOOL isEidt;
     UICollectionView *collection;
     NSIndexPath *indexpath;
+    HobbyCollectionViewCell *cell;
 }
 @property(nonatomic , strong)NSMutableArray *dataArr;
 @property(nonatomic , strong)NSArray *titleArrOne;
@@ -44,7 +45,7 @@ typedef enum :NSInteger{
 
 - (instancetype)initWithFrame:(CGRect)frame{
     if ([super initWithFrame:frame]) {
-        self.titleArrOne = @[@[@"已选类型",@"编辑"].copy,@"点击添加更多"].copy;
+        self.titleArrOne = @[@[@"已选类型",@"编辑喜好"].copy,@"点击添加更多"].copy;
         self.titleArrSecond = @[@[@"已选",@"完成"].copy,@"待选类型"].copy;
         isEidt = NO;
         
@@ -80,7 +81,6 @@ typedef enum :NSInteger{
 //拖拽排序未实现
 - (void)pan:(UIPanGestureRecognizer *)sender{
      [collection addSubview:self.cellView];
-    HobbyCollectionViewCell *cell;
     
     switch (sender.state) {
         case UIGestureRecognizerStateBegan:
@@ -88,14 +88,14 @@ typedef enum :NSInteger{
             indexpath =  [collection indexPathForItemAtPoint:[sender locationInView:collection]];
             if (indexpath == nil || (indexpath.section) > 0||indexpath.row == 0){return;}
             cell = (HobbyCollectionViewCell *)[collection cellForItemAtIndexPath:indexpath];
-//            cell.hidden = YES;
+            cell.hidden = YES;
             self.cellView.center = [sender locationInView:collection];
             self.cellView.hidden = NO;
             self.cellView.bounds = cell.bounds;
             self.cellView.titleStr = cell.titleStr;
             self.cellView.backgroundColor = cell.bgColor;
             self.cellView.bounds = cell.bounds;
-            //点击拖拽时放大，比例自调
+            //点击拖拽时放大（作区分），比例自调
             self.cellView.transform = CGAffineTransformMakeScale(1.3, 1.3);
         }
             break;
@@ -121,8 +121,10 @@ typedef enum :NSInteger{
                 self.cellView.transform = CGAffineTransformIdentity;
                 self.cellView.center = endCell.center;
             }completion:^(BOOL finished) {
+                endCell.hidden = NO;
                 self.cellView.hidden = YES;
                 cell.hidden = NO;
+                indexpath = nil;
             }];
         }
             break;
@@ -155,22 +157,22 @@ typedef enum :NSInteger{
 }
 
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-    HobbyCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cellContent" forIndexPath:indexPath];
-    cell.titleStr = self.dataArr[indexPath.section][indexPath.row];
+    HobbyCollectionViewCell *cellView = [collectionView dequeueReusableCellWithReuseIdentifier:@"cellContent" forIndexPath:indexPath];
+    cellView.titleStr = self.dataArr[indexPath.section][indexPath.row];
     if (!isEidt) {
-        cell.isEdit = NO;
+        cellView.isEdit = NO;
     }else{
         if (indexPath.section == 0) {
             if (indexPath.row == 0) {
-                cell.isEdit = NO;
+                cellView.isEdit = NO;
             }else{
-                cell.isEdit = YES;
+                cellView.isEdit = YES;
             }
         }else{
-            cell.isEdit = NO;
+            cellView.isEdit = NO;
         }
     }
-    return cell;
+    return cellView;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
