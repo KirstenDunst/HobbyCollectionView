@@ -19,7 +19,7 @@
     // Do any additional setup after loading the view, typically from a nib.
     self.title = @"个性定制";
     UIButton *myCreateButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    myCreateButton.frame = CGRectMake(0, 0, 100, 100);
+    myCreateButton.frame = CGRectMake(0, 100, 100, 100);
     [myCreateButton setBackgroundColor:[UIColor grayColor]];
     [myCreateButton setTitle:@"Choose" forState:UIControlStateNormal];
     [myCreateButton addTarget:self action:@selector(buttonChoose:) forControlEvents:UIControlEventTouchUpInside];
