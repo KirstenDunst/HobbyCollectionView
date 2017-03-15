@@ -35,7 +35,7 @@ typedef enum :NSInteger{
 
 - (NSMutableArray *)dataArr{
     if (!_dataArr) {
-        NSMutableArray *oneArr = [NSMutableArray arrayWithObjects:@"娇小",@"甜美",@"街头",@"闺蜜",@"运动", nil];
+        NSMutableArray *oneArr = [NSMutableArray arrayWithObjects:@"必选",@"甜美",@"街头",@"闺蜜",@"运动", nil];
         NSMutableArray *secondArr = [NSMutableArray arrayWithObjects:@"本土",@"逛街",@"OL",@"休闲",@"高挑",@"优选",@"欧美",@"摩登",@"约会",@"轻熟",@"清新",@"丰满",@"典礼",@"热门",@"复古",@"型男",@"混搭",@"派对",@"出游",@"日韩", nil];
         _dataArr = @[oneArr,secondArr].mutableCopy;
     }
@@ -88,7 +88,7 @@ typedef enum :NSInteger{
             indexpath =  [collection indexPathForItemAtPoint:[sender locationInView:collection]];
             if (indexpath == nil || (indexpath.section) > 0||indexpath.row == 0){return;}
             cell = (HobbyCollectionViewCell *)[collection cellForItemAtIndexPath:indexpath];
-            cell.hidden = YES;
+//            cell.hidden = YES;
             self.cellView.center = [sender locationInView:collection];
             self.cellView.hidden = NO;
             self.cellView.bounds = cell.bounds;
@@ -101,7 +101,7 @@ typedef enum :NSInteger{
             break;
         case UIGestureRecognizerStateChanged:
         {
-            if (indexpath == nil || (indexpath.section) > 0 ){return;}
+            if (indexpath == nil || (indexpath.section) > 0 ||indexpath.row == 0){return;}
              self.cellView.center = [sender locationInView:collection];
             NSIndexPath *targetindexPath = [collection indexPathForItemAtPoint:[sender locationInView:collection]];
             if (targetindexPath.row == 0||targetindexPath == nil || (targetindexPath.section) > 0 || indexpath == targetindexPath ) {
@@ -161,7 +161,11 @@ typedef enum :NSInteger{
         cell.isEdit = NO;
     }else{
         if (indexPath.section == 0) {
-            cell.isEdit = YES;
+            if (indexPath.row == 0) {
+                cell.isEdit = NO;
+            }else{
+                cell.isEdit = YES;
+            }
         }else{
             cell.isEdit = NO;
         }
@@ -217,6 +221,9 @@ typedef enum :NSInteger{
         [collectionView moveItemAtIndexPath:indexPath toIndexPath:[NSIndexPath indexPathForRow:[self.dataArr[0] count]-1 inSection:0]];
     }else{
         if (isEidt) {
+            if (indexPath.section == 0 &&indexPath.row == 0) {
+                return;
+            }
             [self.dataArr[1] addObject:self.dataArr[0][indexPath.row]];
             [self.dataArr[0] removeObject:self.dataArr[0][indexPath.row]];
             [collectionView moveItemAtIndexPath:indexPath toIndexPath:[NSIndexPath indexPathForRow:[self.dataArr[1] count]-1 inSection:1]];
