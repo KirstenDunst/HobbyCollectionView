@@ -86,50 +86,44 @@ typedef enum :NSInteger{
         case UIGestureRecognizerStateBegan:
         {
             indexpath =  [collection indexPathForItemAtPoint:[sender locationInView:collection]];
-            if (indexpath == nil || (indexpath.section) > 0 || indexpath.item == 0 ){return;}
-            cell = [collection cellForItemAtIndexPath:indexpath];
-//            cell.hidden = YES;
+            if (indexpath == nil || (indexpath.section) > 0||indexpath.row == 0){return;}
+            cell = (HobbyCollectionViewCell *)[collection cellForItemAtIndexPath:indexpath];
+            cell.hidden = YES;
             self.cellView.center = [sender locationInView:collection];
             self.cellView.hidden = NO;
             self.cellView.bounds = cell.bounds;
             self.cellView.titleStr = cell.titleStr;
             self.cellView.backgroundColor = cell.bgColor;
             self.cellView.bounds = cell.bounds;
+            //点击拖拽时放大，比例自调
+            self.cellView.transform = CGAffineTransformMakeScale(1.3, 1.3);
         }
             break;
         case UIGestureRecognizerStateChanged:
         {
-            if (indexpath == nil || (indexpath.section) > 0 || indexpath.item == 0 ){return;}
+            if (indexpath == nil || (indexpath.section) > 0 ){return;}
              self.cellView.center = [sender locationInView:collection];
-//            NSIndexPath *targetindexPath = [collection indexPathForItemAtPoint:[sender locationInView:collection]];
-//            NSString *tempStr = cell.titleStr;
-////            [self.dataArr removeObject:tempStr];
-//            [self.dataArr removeObjectAtIndex:indexpath.row];
-//            [self.dataArr insertObject:tempStr atIndex:targetindexPath.row];
-//            [collection moveItemAtIndexPath:indexpath toIndexPath:targetindexPath];
-//            indexpath = targetindexPath;
+            NSIndexPath *targetindexPath = [collection indexPathForItemAtPoint:[sender locationInView:collection]];
+            if (targetindexPath.row == 0||targetindexPath == nil || (targetindexPath.section) > 0 || indexpath == targetindexPath ) {
+                targetindexPath = indexpath;
+            }
+            NSString *tempStr = self.cellView.titleStr;
+            [self.dataArr[0] removeObjectAtIndex:indexpath.row];
+            [self.dataArr[0] insertObject:tempStr atIndex:targetindexPath.row];
+            [collection moveItemAtIndexPath:indexpath toIndexPath:targetindexPath];
+            indexpath = targetindexPath;
         }
             break;
         case UIGestureRecognizerStateEnded:
         {
-            if (indexpath == nil || (indexpath.section) > 0 || indexpath.item == 0 ){return;}
-            NSIndexPath *index = [collection indexPathForItemAtPoint:[sender locationInView:collection]];
-            NSMutableArray *chooseArr = self.dataArr[0];
-            [chooseArr exchangeObjectAtIndex:indexpath.row withObjectAtIndex:index.row];
-            [collection moveItemAtIndexPath:indexpath toIndexPath:index];
-            self.cellView.hidden = YES;
-            cell.hidden = NO;
-        }
-            break;
-        case UIGestureRecognizerStateCancelled:
-        {
-            if (indexpath == nil || (indexpath.section) > 0 || indexpath.item == 0 ){return;}
-            NSIndexPath *index = [collection indexPathForItemAtPoint:[sender locationInView:collection]];
-            NSMutableArray *chooseArr = self.dataArr[0];
-            [chooseArr exchangeObjectAtIndex:indexpath.row withObjectAtIndex:index.row];
-            [collection moveItemAtIndexPath:indexpath toIndexPath:index];
-            self.cellView.hidden = YES;
-            cell.hidden = NO;
+            HobbyCollectionViewCell *endCell = (HobbyCollectionViewCell *)[collection cellForItemAtIndexPath:indexpath];
+            [UIView animateWithDuration:0.25 animations:^{
+                self.cellView.transform = CGAffineTransformIdentity;
+                self.cellView.center = endCell.center;
+            }completion:^(BOOL finished) {
+                self.cellView.hidden = YES;
+                cell.hidden = NO;
+            }];
         }
             break;
             
