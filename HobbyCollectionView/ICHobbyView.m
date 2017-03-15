@@ -7,6 +7,8 @@
 //
 
 #import "ICHobbyView.h"
+#import "HobbyCollectionViewCell.h"
+
 
 @interface ICHobbyView ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
 {
@@ -17,6 +19,8 @@
 @property(nonatomic , strong)NSMutableArray *dataArr;
 @property(nonatomic , strong)NSArray *titleArrOne;
 @property(nonatomic , strong)NSArray *titleArrSecond;
+@property(nonatomic , strong)HobbyCollectionViewCell *cellView;
+
 
 @end
 
@@ -26,6 +30,7 @@
 typedef enum :NSInteger{
     labelTag = 10,
     buttonTag = 20,
+    cellViewTag = 30,
 }tags;
 
 - (NSMutableArray *)dataArr{
@@ -48,6 +53,14 @@ typedef enum :NSInteger{
     return self;
 }
 
+- (HobbyCollectionViewCell *)cellView{
+    if (!_cellView) {
+        _cellView = [[HobbyCollectionViewCell alloc]initWithFrame:CGRectMake(0, 0, 50, 25)];
+        _cellView.hidden = YES;
+    }
+    [self bringSubviewToFront:_cellView];
+    return _cellView;
+}
 - (void)createCollectionViewWithFrame:(CGRect)frame{
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc]init];
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
@@ -56,47 +69,67 @@ typedef enum :NSInteger{
     collection.delegate = self;
     collection.dataSource = self;
     [self addSubview:collection];
-    [collection registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"cellContent"];
+    [collection registerClass:[HobbyCollectionViewCell class] forCellWithReuseIdentifier:@"cellContent"];
     [collection registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"Header"];
     
-    
+   
+    UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(pan:)];
+    [collection addGestureRecognizer:pan];
 }
 
 //拖拽排序未实现
-- (void)tap:(UITapGestureRecognizer *)sender{
-    
-    UICollectionViewCell *cell;
+- (void)pan:(UIPanGestureRecognizer *)sender{
+     [collection addSubview:self.cellView];
+    HobbyCollectionViewCell *cell;
     
     switch (sender.state) {
         case UIGestureRecognizerStateBegan:
         {
             indexpath =  [collection indexPathForItemAtPoint:[sender locationInView:collection]];
+            if (indexpath == nil || (indexpath.section) > 0 || indexpath.item == 0 ){return;}
             cell = [collection cellForItemAtIndexPath:indexpath];
+//            cell.hidden = YES;
+            self.cellView.center = [sender locationInView:collection];
+            self.cellView.hidden = NO;
+            self.cellView.bounds = cell.bounds;
+            self.cellView.titleStr = cell.titleStr;
+            self.cellView.backgroundColor = cell.bgColor;
+            self.cellView.bounds = cell.bounds;
         }
             break;
         case UIGestureRecognizerStateChanged:
         {
             if (indexpath == nil || (indexpath.section) > 0 || indexpath.item == 0 ){return;}
-            cell.center = [sender locationInView:collection];
-            
+             self.cellView.center = [sender locationInView:collection];
+//            NSIndexPath *targetindexPath = [collection indexPathForItemAtPoint:[sender locationInView:collection]];
+//            NSString *tempStr = cell.titleStr;
+////            [self.dataArr removeObject:tempStr];
+//            [self.dataArr removeObjectAtIndex:indexpath.row];
+//            [self.dataArr insertObject:tempStr atIndex:targetindexPath.row];
+//            [collection moveItemAtIndexPath:indexpath toIndexPath:targetindexPath];
+//            indexpath = targetindexPath;
         }
             break;
         case UIGestureRecognizerStateEnded:
         {
-             if (indexpath == nil || (indexpath.section) > 0 || indexpath.item == 0 ){return;}
+            if (indexpath == nil || (indexpath.section) > 0 || indexpath.item == 0 ){return;}
             NSIndexPath *index = [collection indexPathForItemAtPoint:[sender locationInView:collection]];
             NSMutableArray *chooseArr = self.dataArr[0];
             [chooseArr exchangeObjectAtIndex:indexpath.row withObjectAtIndex:index.row];
             [collection moveItemAtIndexPath:indexpath toIndexPath:index];
+            self.cellView.hidden = YES;
+            cell.hidden = NO;
         }
             break;
         case UIGestureRecognizerStateCancelled:
         {
-             if (indexpath == nil || (indexpath.section) > 0 || indexpath.item == 0 ){return;}
+            if (indexpath == nil || (indexpath.section) > 0 || indexpath.item == 0 ){return;}
             NSIndexPath *index = [collection indexPathForItemAtPoint:[sender locationInView:collection]];
             NSMutableArray *chooseArr = self.dataArr[0];
             [chooseArr exchangeObjectAtIndex:indexpath.row withObjectAtIndex:index.row];
             [collection moveItemAtIndexPath:indexpath toIndexPath:index];
+            self.cellView.hidden = YES;
+            cell.hidden = NO;
         }
             break;
             
@@ -104,6 +137,7 @@ typedef enum :NSInteger{
             break;
     }
 }
+
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
     return self.dataArr.count;
 }
@@ -127,21 +161,17 @@ typedef enum :NSInteger{
 }
 
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cellContent" forIndexPath:indexPath];
-    UIButton *myCreateButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    myCreateButton.frame = CGRectMake(0, 0, 50, 25);
-    [myCreateButton setTitle: self.dataArr[indexPath.section][indexPath.row] forState:UIControlStateNormal];
-    myCreateButton.userInteractionEnabled = NO;
+    HobbyCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cellContent" forIndexPath:indexPath];
+    cell.titleStr = self.dataArr[indexPath.section][indexPath.row];
     if (!isEidt) {
-        [myCreateButton setBackgroundColor:[UIColor grayColor]];
+        cell.isEdit = NO;
     }else{
         if (indexPath.section == 0) {
-            [myCreateButton setBackgroundColor:[UIColor orangeColor]];
+            cell.isEdit = YES;
         }else{
-            [myCreateButton setBackgroundColor:[UIColor grayColor]];
+            cell.isEdit = NO;
         }
     }
-    [cell.contentView addSubview:myCreateButton];
     return cell;
 }
 
@@ -175,9 +205,11 @@ typedef enum :NSInteger{
         [myCreateButton setTitle:str forState:UIControlStateNormal];
         [myCreateButton setBackgroundColor:[UIColor grayColor]];
         [myCreateButton addTarget:self action:@selector(buttonCh:) forControlEvents:UIControlEventTouchUpInside];
+        myCreateButton.userInteractionEnabled = YES;
     }else{
         [myCreateButton setTitle:@"" forState:UIControlStateNormal];
         [myCreateButton setBackgroundColor:[UIColor clearColor]];
+        myCreateButton.userInteractionEnabled = NO;
     }
     return view;
 }

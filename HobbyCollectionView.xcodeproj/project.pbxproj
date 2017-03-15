@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F1E32951E78D26C00AE3ABC /* HobbyCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F1E32941E78D26C00AE3ABC /* HobbyCollectionViewCell.m */; };
 		1F2BBD5C1E7786670082B920 /* ICHobbyView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F2BBD5B1E7786670082B920 /* ICHobbyView.m */; };
 		1F4907CB1E766E6800F66F0D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F4907CA1E766E6800F66F0D /* main.m */; };
 		1F4907CE1E766E6800F66F0D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F4907CD1E766E6800F66F0D /* AppDelegate.m */; };
@@ -17,6 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1F1E32931E78D26C00AE3ABC /* HobbyCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HobbyCollectionViewCell.h; sourceTree = "<group>"; };
+		1F1E32941E78D26C00AE3ABC /* HobbyCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HobbyCollectionViewCell.m; sourceTree = "<group>"; };
 		1F2BBD5A1E7786670082B920 /* ICHobbyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICHobbyView.h; sourceTree = "<group>"; };
 		1F2BBD5B1E7786670082B920 /* ICHobbyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ICHobbyView.m; sourceTree = "<group>"; };
 		1F4907C61E766E6700F66F0D /* HobbyCollectionView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HobbyCollectionView.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -67,6 +70,8 @@
 				1F4907D01E766E6800F66F0D /* ViewController.m */,
 				1F2BBD5A1E7786670082B920 /* ICHobbyView.h */,
 				1F2BBD5B1E7786670082B920 /* ICHobbyView.m */,
+				1F1E32931E78D26C00AE3ABC /* HobbyCollectionViewCell.h */,
+				1F1E32941E78D26C00AE3ABC /* HobbyCollectionViewCell.m */,
 				1F4907D21E766E6900F66F0D /* Main.storyboard */,
 				1F4907D51E766E6900F66F0D /* Assets.xcassets */,
 				1F4907D71E766E6900F66F0D /* LaunchScreen.storyboard */,
@@ -158,6 +163,7 @@
 			files = (
 				1F4907D11E766E6800F66F0D /* ViewController.m in Sources */,
 				1F4907CE1E766E6800F66F0D /* AppDelegate.m in Sources */,
+				1F1E32951E78D26C00AE3ABC /* HobbyCollectionViewCell.m in Sources */,
 				1F4907CB1E766E6800F66F0D /* main.m in Sources */,
 				1F2BBD5C1E7786670082B920 /* ICHobbyView.m in Sources */,
 			);
