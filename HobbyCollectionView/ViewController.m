@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-#import "ICHobbyView.h"
+#import "SecondViewController.h"
 
 @interface ViewController ()
 
@@ -17,14 +17,22 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    
     self.title = @"个性定制";
-    
-    ICHobbyView *hobbyView = [[ICHobbyView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    [self.view addSubview:hobbyView];
+    UIButton *myCreateButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    myCreateButton.frame = CGRectMake(0, 0, 100, 100);
+    [myCreateButton setBackgroundColor:[UIColor grayColor]];
+    [myCreateButton setTitle:@"Choose" forState:UIControlStateNormal];
+    [myCreateButton addTarget:self action:@selector(buttonChoose:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:myCreateButton];
+}
+- (void)buttonChoose:(UIButton *)sender{
+    SecondViewController *secondVC = [[SecondViewController alloc]init];
+    secondVC.kind = ^(NSString *kinds){
+        self.title = kinds;
+    };
+    [self.navigationController pushViewController:secondVC animated:YES];
     
 }
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

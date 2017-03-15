@@ -22,7 +22,6 @@
 @property(nonatomic , strong)NSArray *titleArrSecond;
 @property(nonatomic , strong)HobbyCollectionViewCell *cellView;
 
-
 @end
 
 @implementation ICHobbyView
@@ -34,22 +33,15 @@ typedef enum :NSInteger{
     cellViewTag = 30,
 }tags;
 
-- (NSMutableArray *)dataArr{
-    if (!_dataArr) {
-        NSMutableArray *oneArr = [NSMutableArray arrayWithObjects:@"必选",@"甜美",@"街头",@"闺蜜",@"运动", nil];
-        NSMutableArray *secondArr = [NSMutableArray arrayWithObjects:@"本土",@"逛街",@"OL",@"休闲",@"高挑",@"优选",@"欧美",@"摩登",@"约会",@"轻熟",@"清新",@"丰满",@"典礼",@"热门",@"复古",@"型男",@"混搭",@"派对",@"出游",@"日韩", nil];
-        _dataArr = @[oneArr,secondArr].mutableCopy;
-    }
-    return _dataArr;
-}
 
-- (instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame andInstilizeTitleArr:(NSMutableArray *)instailze_titleArr andEditTitleArr:(NSMutableArray *)edit_titleArr andHobbyArr:(NSMutableArray *)hobbyArr AndbackForNewKinds:(KindsChooseBlock)block{
     if ([super initWithFrame:frame]) {
-        self.titleArrOne = @[@[@"已选类型",@"编辑喜好"].copy,@"点击添加更多"].copy;
-        self.titleArrSecond = @[@[@"已选",@"完成"].copy,@"待选类型"].copy;
-        isEidt = NO;
-        
-        [self createCollectionViewWithFrame:frame];
+    self.dataArr = [NSMutableArray arrayWithArray:hobbyArr];
+    self.titleArrOne = instailze_titleArr;
+    self.titleArrSecond = edit_titleArr;
+    isEidt = NO;
+    [self createCollectionViewWithFrame:frame];
+    self.kindsBlock = block;
     }
     return self;
 }
@@ -229,6 +221,10 @@ typedef enum :NSInteger{
             [self.dataArr[1] addObject:self.dataArr[0][indexPath.row]];
             [self.dataArr[0] removeObject:self.dataArr[0][indexPath.row]];
             [collectionView moveItemAtIndexPath:indexPath toIndexPath:[NSIndexPath indexPathForRow:[self.dataArr[1] count]-1 inSection:1]];
+        }else{
+            if (self.kindsBlock) {
+                self.kindsBlock(self.dataArr[0][indexPath.row]);
+            }
         }
     }
 }
